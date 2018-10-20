@@ -18,7 +18,6 @@ function update(name, value) {
 
 		for (var key in data) {
 			document.getElementById(key).placeholder = data[key]
-			sets.push( document.getElementById(key) )
 		}
 	}
 }

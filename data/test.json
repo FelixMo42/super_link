@@ -1,1 +1,1 @@
-{"vars": {"a": 1, "b": 2, "a + b": "", "c": ""}, "links": [{"name": "add", "vars": ["a", "b", "a + b"]}]}
+{"vars": {"a": 3, "b": 2, "a + b": "", "c": ""}, "links": [{"name": "add", "vars": ["a", "b", "a + b"]}]}

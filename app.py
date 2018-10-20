@@ -93,12 +93,14 @@ def setup(file):
 			id += 1
 			i += 1
 
-	print(link)
-
 	for v in links:
 		for link in links[v]:
 			for name in link["req"]:
 				linkers[name].append(link)
+
+	for name in var:
+		print(name)
+		update(name)
 
 def cheak(link, clear=False):
 	vars = []
@@ -160,7 +162,7 @@ def index():
 	save("test")
 	setup("test")
 	dump()
-	return render_template("index.html", variables=sets, value=var)
+	return render_template("index.html", variables=sets, value=var, sets=sets)
 
 @app.route('/', methods=["PATCH"])
 def update_var():
