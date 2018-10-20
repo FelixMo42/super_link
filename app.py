@@ -6,41 +6,43 @@ app = Flask("link")
 var = {}
 sets = {}
 sets_count = {}
-
-links = {
-	"c" : [
-		{
-			"output": "c",
-			"req": ["a", "b"],
-			"func": lambda a : a[0] + a[1],
-			"id": 0
-		}
-	],
-	"b" : [
-		{
-			"output": "b",
-			"req": ["c", "a"],
-			"func": lambda a : a[0] - a[1],
-			"id": 1
-		}
-	],
-	"a" : [
-		{
-			"output": "a",
-			"req": ["c", "b"],
-			"func": lambda a : a[0] - a[1],
-			"id": 2
-		}
-	]
-}
+links = {}
 linkers = {}
 
-def setup():
-	for var in links:
-		for link in links[var]:
+types = {
+	"add":  lambda a : a[0] + a[1]
+}
+
+def setup(file):
+	global var
+	global sets
+	global sets_count
+	global links
+	global linkers
+
+	with open("data/" + file, 'r') as content_file:
+		data = json.loads(content_file.read())
+
+	sets = data["vars"]
+
+	for name in data["vars"]:
+		links[name] = []
+		linkers[name] = []
+		sets_count[name] = {}
+
+	id = 0
+	for name in data["links"]:
+		for t in data["links"][name]:
+			links[name].append({
+				"output": name,
+				"func": types[t],
+				"id": id,
+				"req": data["links"][name][t]
+			})
+
+	for v in links:
+		for link in links[v]:
 			for name in link["req"]:
-				if name not in linkers:
-					linkers[name] = []
 				linkers[name].append(link)
 
 def cheak(link, clear=False):
@@ -56,7 +58,7 @@ def cheak(link, clear=False):
 	if link["output"] in sets:
 		if clear:
 			del sets_count[link["output"]][link["id"]]
-			if sets_count[link["output"]].length == 0:
+			if len(sets_count[link["output"]]) == 0:
 				sets[link["output"]] = ""
 		else:
 			sets[link["output"]] = link["func"](vars)
@@ -76,21 +78,25 @@ def clear(name):
 
 @app.route('/')
 def index():
-	global var
+	'''global var
 	global sets
 	global sets_count
 
 	var = {}
 	sets = {}
-	sets_count = {}
+	sets_count = {}'''
 
-	return render_template("index.html")
+	#setup("test.json")
+
+	return render_template("index.html", variables=sets)
 
 @app.route('/', methods=["PATCH"])
 def update_var():
 	data = json.loads(request.data)
 
 	print("data: ", data)
+
+	print(var)
 
 	if data["value"] == "":
 		clear( data["name"] )
@@ -106,5 +112,5 @@ def update_var():
 	return json.dumps(sets)
 
 if __name__ == "__main__":
-	setup()
+	setup("test.json")
 	app.run()

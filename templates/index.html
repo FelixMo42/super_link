@@ -6,8 +6,9 @@
 		<script type="text/javascript" src="{{ url_for('static', filename='code.js') }}"></script>
 	</head>
 	<body>
-		a: <input id="a" onchange="update(this.id, this.value)"></input>
-		b: <input id="b" onchange="update(this.id, this.value)"></input>
-		a + b: <input id="c" onchange="update(this.id, this.value)"></input>
+		{{ variables }}
+		a: <input id="a" onchange="update(this.id, this.value)"></input><br>
+		b: <input id="b" onchange="update(this.id, this.value)"></input><br>
+		a + b: <input id="a + b" onchange="update(this.id, this.value)"></input>
 	</body>
 </html>
