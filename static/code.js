@@ -3,21 +3,13 @@ const url = window.location.href
 
 sets = []
 
-function clear() {
-	for ( var i = 0; i < sets.length; i++ ) {
-		console.log(sets[i])
-		sets[i].placeholder = ""
-	}
-
-	sets = []
-}
-
 function update(name, value) {
 	data = {"name": name, "value": value}
 
 	Http.open("PATCH", url);
 	Http.send( JSON.stringify(data) );
 	Http.onreadystatechange = (e) => {
+		console.log(Http.responseText)
 		if (Http.responseText == "") {
 			return
 		}
@@ -25,8 +17,6 @@ function update(name, value) {
 		data = JSON.parse(Http.responseText)
 
 		console.log(data)
-
-		clear()
 
 		for (var key in data) {
 			document.getElementById(key).placeholder = data[key]
