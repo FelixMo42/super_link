@@ -24,3 +24,8 @@ function update(name, value) {
 		}
 	}
 }
+
+function newVar() {
+	name = "c"
+	document.getElementById("variables").innerHTML += "c: <input id='c' onchange='update(this.id, this.value)'><br>"
+}

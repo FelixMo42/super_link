@@ -1,13 +1,39 @@
 <!doctype html>
 <html>
 	<head>
-		<title>thing</title>
+		<title>super link</title>
 
 		<script type="text/javascript" src="{{ url_for('static', filename='code.js') }}"></script>
+		<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static', filename='style.css') }}">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	</head>
 	<body>
-		{% for name in variables %}
-			{{name}}: <input id="{{name}}" onchange="update(this.id, this.value)"></input><br>
-		{% endfor %}
+		<div class="header">
+			<a>load</a>
+			<a onclick="newVar()">new variable</a>
+			<div class="dropdown">
+				<button class="dropbtn">Basic Math
+					<i class="fa fa-caret-down"></i>
+				</button>
+				<div class="dropdown-content">
+					<a href="#">add</a>
+					<a href="#">subtract</a>
+					<a href="#">multiply</a>
+					<a href="#">divide</a>
+				</div>
+			</div>
+		</div>
+
+		<div id="variables">
+			{% for name in variables %}
+				{{name}}: <input id="{{name}}" onchange="update(this.id, this.value)"><br>
+			{% endfor %}
+		</div>
+
+		<div class="footer">
+
+		</div>
 	</body>
 </html>

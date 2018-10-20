@@ -14,6 +14,21 @@ types = {
 		lambda a : a[2] - a[1], #0
 		lambda a : a[2] - a[0], #1
 		lambda a : a[0] + a[1] #2
+	],
+	"subtract":  [
+		lambda a : a[2] + a[1],
+		lambda a : a[2] + a[0],
+		lambda a : a[0] - a[1]
+	],
+	"multiply":  [
+		lambda a : a[2] / a[1],
+		lambda a : a[2] / a[0],
+		lambda a : a[0] * a[1]
+	],
+	"divide":  [
+		lambda a : a[2] * a[1],
+		lambda a : a[2] * a[0],
+		lambda a : a[0] / a[1]
 	]
 }
 
@@ -31,7 +46,7 @@ def setup(file):
 	global links
 	global linkers
 
-	with open("data/" + file, 'r') as content_file:
+	with open("data/" + file + ".json", 'r') as content_file:
 		data = json.loads(content_file.read())
 
 	sets = data["vars"]
@@ -96,7 +111,7 @@ def clear(name):
 
 @app.route('/')
 def index():
-	setup("test.json")
+	setup("test")
 	dump()
 	return render_template("index.html", variables=sets)
 
