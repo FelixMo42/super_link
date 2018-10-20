@@ -25,7 +25,24 @@ function update(name, value) {
 	}
 }
 
+function newVarCallback() {
+	name = this.value
+
+	if (name == "") {
+		alert("You must enter a variable name!")
+		document.getElementById("varNamer_name").select()
+		return
+	}
+
+	document.getElementById("variables").innerHTML += name + ": <input id='" + name + "' onchange='update(this.id, this.value)'><br>"
+	document.getElementById("varNamer").style.display = "none"
+
+	Http.open("POST", url);
+	Http.send( name );
+}
+
 function newVar() {
-	name = "c"
-	document.getElementById("variables").innerHTML += "c: <input id='c' onchange='update(this.id, this.value)'><br>"
+	document.getElementById("varNamer").style.display = "block";
+	document.getElementById("varNamer_name").select()
+	document.getElementById("varNamer_name").onchange = newVarCallback
 }

@@ -39,22 +39,30 @@ def dump():
 	#print("links: ", links)
 	#print("linkers: ", linkers)
 
-def setup(file):
-	global var
+def addVar(name):
 	global sets
 	global sets_count
+	global links
+	global linkers
+
+	sets[name] = ""
+	sets_count[name] = {}
+	links[name] = []
+	linkers[name] = []
+
+	print("added var ", name)
+
+
+def setup(file):
 	global links
 	global linkers
 
 	with open("data/" + file + ".json", 'r') as content_file:
 		data = json.loads(content_file.read())
 
-	sets = data["vars"]
 
 	for name in data["vars"]:
-		links[name] = []
-		linkers[name] = []
-		sets_count[name] = {}
+		addVar(name)
 
 	id = 0
 	for link in data["links"]:
@@ -131,6 +139,14 @@ def update_var():
 	dump()
 
 	return json.dumps(sets)
+
+@app.route('/', methods=["POST"])
+def new_var():
+	addVar(request.data.decode("utf8"))
+
+	dump()
+
+	return ""
 
 if __name__ == "__main__":
 	app.run()
