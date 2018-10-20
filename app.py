@@ -50,19 +50,33 @@ def addVar(name):
 	links[name] = []
 	linkers[name] = []
 
-	print("added var ", name)
-
-
-def setup(file):
+def reset():
+	global vars
+	global sets
+	global sets_count
 	global links
 	global linkers
 
-	with open("data/" + file + ".json", 'r') as content_file:
-		data = json.loads(content_file.read())
+	var = {}
+	sets = {}
+	sets_count = {}
+	links = {}
+	linkers = {}
 
+def setup(file):
+	global var
+	global links
+	global linkers
+
+	reset()
+
+	with open("data/" + file + ".json", 'r') as load_file:
+		data = json.loads(load_file.read())
 
 	for name in data["vars"]:
 		addVar(name)
+		#if data["vars"][name] != "":
+		#	var[name] = data["vars"][name]
 
 	id = 0
 	for link in data["links"]:
@@ -72,7 +86,9 @@ def setup(file):
 				"output": v,
 				"func": types[link["name"]][i],
 				"id": id,
-				"req": link["vars"]
+				"cid": id - i,
+				"req": link["vars"],
+				"name": link["name"]
 			})
 			id += 1
 			i += 1
@@ -117,8 +133,31 @@ def clear(name):
 	for link in linkers[name]:
 		cheak(link, True)
 
+def save(file):
+	data = {"vars": {}, "links": []}
+
+	for v in sets:
+		data["vars"][v] = ""
+	for v in var:
+		data["vars"][v] = var[v]
+
+	saved = []
+
+	for k in links:
+		for l in links[k]:
+			if l["cid"] not in saved:
+				data["links"].append( {
+					"name" : l["name"],
+					"vars" : l["req"]
+				} )
+				saved.append(l["cid"])
+
+	with open("data/" + file + ".json", "w") as save_file:
+		save_file.write(json.dumps(data))
+
 @app.route('/')
 def index():
+	save("test")
 	setup("test")
 	dump()
 	return render_template("index.html", variables=sets)
@@ -143,10 +182,8 @@ def update_var():
 @app.route('/', methods=["POST"])
 def new_var():
 	addVar(request.data.decode("utf8"))
-
-	dump()
-
 	return ""
 
 if __name__ == "__main__":
+	setup("test")
 	app.run()

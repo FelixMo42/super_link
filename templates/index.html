@@ -28,7 +28,7 @@
 
 		<div id="variables">
 			{% for name in variables %}
-				{{name}}: <input id="{{name}}" onchange="update(this.id, this.value)"><br>
+				<span class="varName">{{name}}</span>: <input id="{{name}}" onchange="update(this.id, this.value)"><br>
 			{% endfor %}
 		</div>
 
