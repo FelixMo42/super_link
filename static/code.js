@@ -7,6 +7,17 @@ function update(name, value) {
 	Http.open("PATCH", url);
 	Http.send( JSON.stringify(data) );
 	Http.onreadystatechange = (e) => {
-		console.log(Http.responseText)
+		if (Http.responseText == "") {
+			return
+		}
+
+		data = JSON.parse(Http.responseText)
+
+		console.log(data)
+
+		for (var key in data) {
+			console.log(document.getElementById(key))
+			document.getElementById(key).value = data[key]
+		}
 	}
 }
