@@ -6,6 +6,7 @@ app = Flask("link")
 var = {}
 sets = {}
 sets_count = {}
+
 links = {
 	"c" : [
 		{
