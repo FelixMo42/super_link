@@ -1,8 +1,6 @@
 const Http = new XMLHttpRequest();
 const url = window.location.href
 
-sets = []
-
 function update(name, value) {
 	data = {"name": name, "value": value}
 

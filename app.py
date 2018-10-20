@@ -75,8 +75,8 @@ def setup(file):
 
 	for name in data["vars"]:
 		addVar(name)
-		#if data["vars"][name] != "":
-		#	var[name] = data["vars"][name]
+		if data["vars"][name] != "":
+			var[name] = data["vars"][name]
 
 	id = 0
 	for link in data["links"]:
@@ -160,7 +160,7 @@ def index():
 	save("test")
 	setup("test")
 	dump()
-	return render_template("index.html", variables=sets)
+	return render_template("index.html", variables=sets, value=var)
 
 @app.route('/', methods=["PATCH"])
 def update_var():
