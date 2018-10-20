@@ -10,8 +10,19 @@ links = {}
 linkers = {}
 
 types = {
-	"add":  lambda a : a[0] + a[1]
+	"add":  [
+		lambda a : a[2] - a[1], #0
+		lambda a : a[2] - a[0], #1
+		lambda a : a[0] + a[1] #2
+	]
 }
+
+def dump():
+	print("var: ", var)
+	print("sets: ", sets)
+	print("sets_count: ", sets_count)
+	#print("links: ", links)
+	#print("linkers: ", linkers)
 
 def setup(file):
 	global var
@@ -31,14 +42,19 @@ def setup(file):
 		sets_count[name] = {}
 
 	id = 0
-	for name in data["links"]:
-		for t in data["links"][name]:
+	for link in data["links"]:
+		i = 0
+		for v in link["vars"]:
 			links[name].append({
-				"output": name,
-				"func": types[t],
+				"output": v,
+				"func": types[link["name"]][i],
 				"id": id,
-				"req": data["links"][name][t]
+				"req": link["vars"]
 			})
+			id += 1
+			i += 1
+
+	print(link)
 
 	for v in links:
 		for link in links[v]:
@@ -48,14 +64,16 @@ def setup(file):
 def cheak(link, clear=False):
 	vars = []
 	for v in link["req"]:
-		if v in var:
+		if v == link["output"]:
+			vars.append(False)
+		elif v in var:
 			vars.append(var[v])
 		elif v in sets and sets[v] != "":
 			vars.append(sets[v])
 		else:
 			return
 
-	if link["output"] in sets:
+	if link["output"] in sets and sets[link["output"]] != "":
 		if clear:
 			del sets_count[link["output"]][link["id"]]
 			if len(sets_count[link["output"]]) == 0:
@@ -63,7 +81,7 @@ def cheak(link, clear=False):
 		else:
 			sets[link["output"]] = link["func"](vars)
 			sets_count[link["output"]][link["id"]] = True
-	else:
+	elif not clear:
 		sets[link["output"]] = link["func"](vars)
 		sets_count[link["output"]] = {link["id"]: True}
 
@@ -78,16 +96,8 @@ def clear(name):
 
 @app.route('/')
 def index():
-	'''global var
-	global sets
-	global sets_count
-
-	var = {}
-	sets = {}
-	sets_count = {}'''
-
-	#setup("test.json")
-
+	setup("test.json")
+	dump()
 	return render_template("index.html", variables=sets)
 
 @app.route('/', methods=["PATCH"])
@@ -96,8 +106,6 @@ def update_var():
 
 	print("data: ", data)
 
-	print(var)
-
 	if data["value"] == "":
 		clear( data["name"] )
 		del var[data["name"]]
@@ -105,12 +113,9 @@ def update_var():
 		var[data["name"]] = eval(data["value"])
 		update( data["name"] )
 
-	print( "var: ", var )
-	print( "sets: ", sets )
-	print( "sets_count: ", sets_count )
+	dump()
 
 	return json.dumps(sets)
 
 if __name__ == "__main__":
-	setup("test.json")
 	app.run()
