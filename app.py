@@ -12,21 +12,24 @@ links = {
 		{
 			"output": "c",
 			"req": ["a", "b"],
-			"func": lambda a : a[0] + a[1]
+			"func": lambda a : a[0] + a[1],
+			"id": 0
 		}
 	],
 	"b" : [
 		{
 			"output": "b",
 			"req": ["c", "a"],
-			"func": lambda a : a[0] - a[1]
+			"func": lambda a : a[0] - a[1],
+			"id": 1
 		}
 	],
 	"a" : [
 		{
 			"output": "a",
 			"req": ["c", "b"],
-			"func": lambda a : a[0] - a[1]
+			"func": lambda a : a[0] - a[1],
+			"id": 2
 		}
 	]
 }
@@ -52,14 +55,15 @@ def cheak(link, clear=False):
 
 	if link["output"] in sets:
 		if clear:
-			sets_count[link["output"]] = sets_count[link["output"]] - 1
-			if sets_count[link["output"]] == 0:
+			del sets_count[link["output"]][link["id"]]
+			if sets_count[link["output"]].length == 0:
 				sets[link["output"]] = ""
 		else:
-			sets_count[link["output"]] = sets_count[link["output"]] + 1
+			sets[link["output"]] = link["func"](vars)
+			sets_count[link["output"]][link["id"]] = True
 	else:
 		sets[link["output"]] = link["func"](vars)
-		sets_count[link["output"]] = 1
+		sets_count[link["output"]] = {link["id"]: True}
 
 def update(name):
 	for link in linkers[name]:
