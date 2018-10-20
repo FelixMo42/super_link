@@ -99,7 +99,6 @@ def setup(file):
 				linkers[name].append(link)
 
 	for name in var:
-		print(name)
 		update(name)
 
 def cheak(link, clear=False):
@@ -174,7 +173,12 @@ def update_var():
 		clear( data["name"] )
 		del var[data["name"]]
 	else:
-		var[data["name"]] = eval(data["value"])
+		try:
+			var[data["name"]] = eval(data["value"])
+		except:
+			clear( data["name"] )
+			return "Must be a number or Python3 code resulting in a number" + "\n" + json.dumps(sets)
+
 		update( data["name"] )
 
 	dump()
