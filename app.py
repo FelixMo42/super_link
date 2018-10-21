@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, Markup
 import json
 
-id = 0
+uid = 0
 
 app = Flask('app')
 
@@ -47,8 +47,8 @@ def dump():
 	print("var: ", var)
 	print("sets: ", sets)
 	print("sets_count: ", sets_count)
-	#print("links: ", links)
-	#print("linkers: ", linkers)
+	print("links: ", links)
+	print("linkers: ", linkers)
 
 #var funcs
 
@@ -78,12 +78,16 @@ def delVar(name):
 
 #link funcs
 
-def addLink(link,cid=id):
-	global id
+def addLink(link, cid=False):
+	global uid
 	global links
 	global linkers
 
 	i = 0
+
+	if not cid:
+		cid = uid
+		uid += 1
 
 	for name in link["vars"]:
 		for target in link["vars"]:
@@ -96,8 +100,6 @@ def addLink(link,cid=id):
 					"name": link["name"]
 				})
 		i += 1
-
-	id += 1
 
 	links[cid] = link
 
@@ -175,7 +177,7 @@ def reset():
 	linkers = {}
 
 def setup(file):
-	global id
+	global uid
 	global var
 	global links
 	global linkers
@@ -186,7 +188,7 @@ def setup(file):
 		data = json.loads(load_file.read())
 		print(data)
 
-	id = data["id"]
+	uid = data["id"]
 
 	for name in data["vars"]:
 		addVar(name)
@@ -200,7 +202,7 @@ def setup(file):
 		update(name)
 
 def save(file):
-	data = {"vars": {}, "links": {}, "id": id}
+	data = {"vars": {}, "links": {}, "id": uid}
 
 	for v in sets:
 		data["vars"][v] = ""
@@ -224,29 +226,30 @@ def index():
 
 @app.route('/', methods=["SET_VAR"])
 def set_var():
-	data = json.loads(request.data)
+	if request.data != "":
+		data = json.loads(request.data)
 
-	print("data: ", data)
+		print("data: ", data)
 
-	if data["value"] == "":
-		print("clear")
-		#clear( data["name"] )
-		del var[data["name"]]
-		save("test")
-		setup("test")
-	else:
-		try:
-			var[data["name"]] = eval(data["value"])
-		except:
-			print("THERE WAS AN ERROR")
+		if data["value"] == "":
+			print("clear")
 			#clear( data["name"] )
+			del var[data["name"]]
 			save("test")
 			setup("test")
-			return "Must be a number or Python3 code resulting in a number" + "\n" + json.dumps(sets)
+		else:
+			try:
+				var[data["name"]] = eval(data["value"])
+			except:
+				print("THERE WAS AN ERROR")
+				#clear( data["name"] )
+				save("test")
+				setup("test")
+				return "Must be a number or Python3 code resulting in a number" + "\n" + json.dumps(sets)
 
-		#update( data["name"] )
-		save("test")
-		setup("test")
+			#update( data["name"] )
+			save("test")
+			setup("test")
 
 	return json.dumps(sets)
 
@@ -301,6 +304,9 @@ def new_link():
 	print(request.data)
 	cid = addLink(json.loads(request.data))
 	save("test")
+
+	dump()
+
 	return "<span class='link' id='" + links[cid]["name"] + "' oncontextmenu='linkMenu(this); return false;'>" + types[links[cid]["name"]][-1] % tuple(list(links[cid]["vars"])) + "<br></span>"
 
 @app.route('/', methods=["DELETE_LINK"])
