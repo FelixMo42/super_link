@@ -39,8 +39,14 @@ function newVar() {
 	document.getElementById("varNamer_name").onchange = function() {
 		name = this.value
 
-		if (name == "") {
+		if (name.replace(/\s+/g, '') == "") {
 			alert("You must enter a variable name!")
+			document.getElementById("varNamer_name").select()
+			return
+		}
+
+		if (document.getElementById(name)) {
+			alert("Name is allready taken!")
 			document.getElementById("varNamer_name").select()
 			return
 		}
@@ -60,13 +66,25 @@ function varMenu(el) {
 		document.getElementById("varMenu").style.display = "none";
 
 		Http.open("DELETE_VAR", url);
-		Http.send( el.id );
+		Http.send( el.getAttribute("value") );
 	}
 	document.getElementById("varMenu_rename").onclick = function() {
 		document.getElementById("varMenu").style.display = "none";
 		document.getElementById("varNamer").style.display = "block";
 		document.getElementById("varNamer_name").select()
 		document.getElementById("varNamer_name").onchange = function() {
+			if (this.value.replace(/\s+/g, '') == "") {
+				alert("You must enter a variable name!")
+				document.getElementById("varNamer_name").select()
+				return
+			}
+
+			if (document.getElementById(name)) {
+				alert("Name is allready taken!")
+				document.getElementById("varNamer_name").select()
+				return
+			}
+
 			Http.open("RENAME_VAR", url);
 			Http.send(JSON.stringify({"old": el.getAttribute("value"), "new": this.value}));
 
