@@ -237,6 +237,14 @@ def index():
 	setup("test")
 	return render_template("index.html", variables=sets, value=var, sets=sets, links=links, types=types, list=list, tuple=tuple)
 
+@app.route('/help')
+def load_help():
+	return render_template("help.html")
+
+@app.route('/about')
+def load_about():
+	return render_template("about.html")
+
 @app.route('/', methods=["SET_VAR"])
 def set_var():
 	if request.data != "":

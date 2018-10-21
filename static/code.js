@@ -63,11 +63,11 @@ function update(name, value) {
 
 //var funcs
 
-function newVar() {
+function newVar(n = false) {
 	showPopup("varNamer")
 	document.getElementById("varNamer_name").select()
 	document.getElementById("varNamer_name").onchange = function() {
-		name = this.value
+		name = n || this.value
 
 		if (name.replace(/\s+/g, '') == "") {
 			alert("You must enter a variable name!")
@@ -151,26 +151,56 @@ function newLink(type, form) {
 
 function saveLink(el) {
 	vars = {}
+	i = 0
+	ord = []
+	datas = []
 
 	for(var child = document.getElementById("linkEdit_span").firstChild; child !== null; child = child.nextSibling) {
 		if (child.nodeName == "INPUT") {
+			if (!document.getElementById(child.value)) {
+				datas.push(child.value)
+				ord.push(function() {
+					Http.open("NEW_VAR", url);
+					Http.send( datas[i] );
+					Http.onreadystatechange = (e) => {
+						if (Http.readyState == 4) {
+							console.log("yo", i)
+							i += 1
+							ord[i]()
+						}
+					}
+				})
+
+				varHTML  = "<span value='" + child.value + "' oncontextmenu='varMenu(this); return false;'>"
+				varHTML += " <span class='varName'>" + child.value + "</span>: "
+				varHTML += " <input id='" + child.value + "' value='' placeholder='' onchange='update(this.id, this.value)'>"
+				varHTML += " <br>"
+				varHTML += "</span>"
+
+				document.getElementById("variables").innerHTML += varHTML
+			}
 			vars[child.value] = ""
 		}
 	}
 
-	data = {"name": document.getElementById("linkEdit").getAttribute("type"), "vars": vars}
 
+	data = {"name": document.getElementById("linkEdit").getAttribute("type"), "vars": vars}
+	datas.push(data)
 	hidePopup("linkEdit")
 
-	Http.open("NEW_LINK", url);
-	Http.send( JSON.stringify(data) );
-	Http.onreadystatechange = (e) => {
-		if (Http.responseText == "" || Http.readyState != 4) {
-			return
-		}
+	ord.push(function() {
+		Http.open("NEW_LINK", url);
+		Http.send( JSON.stringify(datas[i]) );
+		Http.onreadystatechange = (e) => {
+			if (Http.responseText == "" || Http.readyState != 4) {
+				return
+			}
 
-		document.getElementById("links").innerHTML += Http.responseText.deentitize()
-	}
+			document.getElementById("links").innerHTML += Http.responseText.deentitize()
+		}
+	})
+
+	ord[i]()
 }
 
 function linkMenu(el) {
