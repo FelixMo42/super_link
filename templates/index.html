@@ -13,7 +13,34 @@
 	</head>
 	<body>
 		<div class="header">
-			<a>load</a>
+			<div class="dropdown">
+				<button class="dropbtn">load
+					<i class="fa fa-caret-down"></i>
+				</button>
+				<div class="dropdown-content">
+					{% for filename in files %}
+						{% if filename != "do_not_save_here!_this_is_for_real_time_data!23b87x4r287.json" %}
+							<a>{{filename}}</a>
+						{% endif %}
+					{% endfor %}
+				</div>
+			</div>
+			<div class="dropdown">
+				<button class="dropbtn">save
+					<i class="fa fa-caret-down"></i>
+				</button>
+				<div class="dropdown-content">
+					{% for filename in files %}
+						{% if filename != "do_not_save_here!_this_is_for_real_time_data!23b87x4r287.json" %}
+							<a>{{filename}}</a>
+						{% endif %}
+					{% endfor %}
+					<a onclick="newLink('dist_MiKi', '<input>mi = <input>km')">+ new file</a>
+				</div>
+			</div>
+
+			<a class="line"></a>
+
 			<a onclick="newVar()">new variable</a>
 
 			<a class="line"></a>

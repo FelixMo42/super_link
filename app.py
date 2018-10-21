@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request, Markup
+from os import listdir
 import json
 
 uid = 0
+loc = "do_not_save_here!_this_is_for_real_time_data!23b87x4r287"
 
 app = Flask('app')
 
@@ -119,13 +121,13 @@ def delLink(cid):
 	global links
 	global linkers
 
-	save("test")
-	setup("test")
+	save(loc)
+	setup(loc)
 
 	del links[cid]
 
-	save("test")
-	setup("test")
+	save(loc)
+	setup(loc)
 
 	'''for name in link["vars"]:
 		clear(name)
@@ -233,9 +235,13 @@ def save(file):
 
 @app.route('/')
 def index():
-	save("test")
-	setup("test")
-	return render_template("index.html", variables=sets, value=var, sets=sets, links=links, types=types, list=list, tuple=tuple)
+	save(loc)
+	setup(loc)
+	return render_template("index.html",
+		variables=sets, value=var, sets=sets,
+		links=links, types=types, files=listdir("data"),
+		list=list, tuple=tuple,
+	)
 
 @app.route('/help')
 def load_help():
@@ -256,34 +262,34 @@ def set_var():
 			print("clear")
 			#clear( data["name"] )
 			del var[data["name"]]
-			save("test")
-			setup("test")
+			save(loc)
+			setup(loc)
 		else:
 			try:
 				var[data["name"]] = eval(data["value"])
 			except:
 				print("THERE WAS AN ERROR")
 				#clear( data["name"] )
-				save("test")
-				setup("test")
+				save(loc)
+				setup(loc)
 				return "Must be a number or Python3 code resulting in a number" + "\n" + json.dumps(sets)
 
 			#update( data["name"] )
-			save("test")
-			setup("test")
+			save(loc)
+			setup(loc)
 
 	return json.dumps(sets)
 
 @app.route('/', methods=["NEW_VAR"])
 def new_var():
 	addVar(request.data.decode("utf8"))
-	save("test")
+	save(loc)
 	return ""
 
 @app.route('/', methods=["DELETE_VAR"])
 def delete_var():
 	delVar(request.data.decode("utf8"))
-	save("test")
+	save(loc)
 	return ""
 
 @app.route('/', methods=["RENAME_VAR"])
@@ -317,14 +323,14 @@ def rename_var():
 			del linkers[data["old"]]
 
 	dump()
-	save("test")
+	save(loc)
 	return ""
 
 @app.route('/', methods=["NEW_LINK"])
 def new_link():
 	print(request.data)
 	cid = addLink(json.loads(request.data))
-	save("test")
+	save(loc)
 
 	dump()
 
@@ -339,7 +345,7 @@ def new_link():
 @app.route('/', methods=["DELETE_LINK"])
 def delete_link():
 	delLink(request.data.decode("utf8"))
-	save("test")
+	save(loc)
 	return ""
 
 @app.route('/', methods=["EDIT_LINK"])
@@ -352,7 +358,7 @@ def edit_link():
 	for key in data["vars"]:
 		link["vars"][key] = data["vars"]
 
-	save("test")
+	save(loc)
 	return ""
 
 app.run(host='0.0.0.0', port=8080)
