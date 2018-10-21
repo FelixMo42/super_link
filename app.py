@@ -219,9 +219,7 @@ def new_var():
 
 @app.route('/', methods=["DELETE_VAR"])
 def delete_var():
-	print("-" + request.data.decode("utf8") + "-")
 	delVar(request.data.decode("utf8"))
-	dump()
 	save("test")
 	return ""
 
