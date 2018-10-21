@@ -99,7 +99,7 @@ def addLink(link,cid=id):
 
 	links[cid] = link
 
-	return id
+	return cid
 
 def delLink(cid):
 	global links
@@ -117,7 +117,6 @@ def delLink(cid):
 				del linkers[name][i]
 			else:
 				i += 1
-
 
 	del links[cid]
 
@@ -293,7 +292,7 @@ def new_link():
 	print(request.data)
 	cid = addLink(json.loads(request.data))
 	save("test")
-	return str(cid)
+	return "<span class='link' id='" + links[cid]["name"] + "' oncontextmenu='linkMenu(this); return false;'>" + types[links[cid]["name"]][-1] % tuple(list(links[cid]["vars"])) + "</span>"
 
 @app.route('/', methods=["DELETE_LINK"])
 def delete_link():

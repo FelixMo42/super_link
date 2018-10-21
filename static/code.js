@@ -1,6 +1,15 @@
 var Http = new XMLHttpRequest();
 const url = window.location.href
 
+String.prototype.deentitize = function() {
+    var ret = this.replace(/&gt;/g, '>');
+    ret = ret.replace(/&lt;/g, '<');
+    ret = ret.replace(/&quot;/g, '"');
+    ret = ret.replace(/&apos;/g, "'");
+    ret = ret.replace(/&amp;/g, '&');
+    return ret;
+};
+
 //pop up funcs
 
 function showPopup(popup) {
@@ -151,6 +160,13 @@ function saveLink(el) {
 
 	Http.open("NEW_LINK", url);
 	Http.send( JSON.stringify(data) );
+	Http.onreadystatechange = (e) => {
+		if (Http.responseText == "" || Http.readyState != 4) {
+			return
+		}
+
+		document.getElementById("links").innerHTML += Http.responseText.deentitize()
+	}
 }
 
 function linkMenu(el) {
@@ -191,6 +207,7 @@ function linkMenu(el) {
 			/////////
 
 			vars = {}
+			name = "add"
 
 			for(var child = document.getElementById("linkEdit_span").firstChild; child !== null; child = child.nextSibling) {
 				if (child.nodeName == "INPUT") {
@@ -198,10 +215,19 @@ function linkMenu(el) {
 				}
 			}
 
-			data = {"name": "add", "vars": vars}
+			data = {"name": name, "vars": vars}
 
 			Http.open("NEW_LINK", url);
 			Http.send( JSON.stringify(data) );
+			Http.onreadystatechange = (e) => {
+				if (Http.responseText == "" || Http.readyState != 4) {
+					return
+				}
+
+				console.log(Http.responseText)
+
+				document.getElementById("links").innerHTML += Http.responseText.deentitize()
+			}
 		}
 	}
 	document.getElementById("linkMenu_delete").onclick = function() {
