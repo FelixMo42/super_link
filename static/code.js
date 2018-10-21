@@ -1,6 +1,8 @@
 var Http = new XMLHttpRequest();
 const url = window.location.href
 
+//pop up funcs
+
 function showPopup(popup) {
 	document.getElementById("shade").style.display = "block";
 	document.getElementById(popup).style.display = "block";
@@ -14,6 +16,8 @@ function hidePopup(popup) {
 	document.getElementById("shade").style.display = "none";
 	document.getElementById(popup).style.display = "none";
 }
+
+//calc funcs
 
 function update(name, value) {
 	data = {"name": name, "value": value}
@@ -46,6 +50,8 @@ function update(name, value) {
 		}
 	}
 }
+
+//var funcs
 
 function newVar() {
 	showPopup("varNamer")
@@ -125,6 +131,8 @@ function varMenu(el) {
 	}
 }
 
+//link funcs
+
 function newLink(type) {
 	showPopup("linkEdit")
 	document.getElementById("linkEdit").setAttribute("type", type)
@@ -143,4 +151,18 @@ function saveLink(el) {
 
 	Http.open("NEW_LINK", url);
 	Http.send( JSON.stringify(data) );
+}
+
+function linkMenu(el) {
+	showPopup("linkMenu")
+
+	document.getElementById("linkMenu_delete").onclick = function() {
+		el.parentNode.removeChild(el)
+		hidePopup("linkMenu")
+
+		Http.open("DELETE_LINK", url);
+		Http.send( el.id );
+	}
+	document.getElementById("linkMenu_rename").onclick = function() {
+	}
 }

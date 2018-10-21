@@ -45,7 +45,7 @@
 
 		<div id="links">
 			{% for name in links %}
-				<span class="link">
+				<span class="link" id="{{name}}" oncontextmenu="linkMenu(this); return false;">
 					{{types[links[name]["name"]][-1] % tuple(list(links[name]["vars"]))}}
 				</span>
 			{% endfor %}
@@ -65,13 +65,14 @@
 		</div>
 
 		<div class="popup" id="linkEdit">
-			<input></input>
-			+
-			<input></input>
-			=
-			<input></input>
+			<input></input> + <input></input> = <input></input>
 			<br>
 			<button id="link_save" onclick="saveLink(this.parentNode)">save</button>
+		</div>
+
+		<div class="popup" id="linkMenu">
+			<button id="linkMenu_edit">edit</button><br>
+			<button id="linkMenu_delete">delete</button>
 		</div>
 	</body>
 </html>

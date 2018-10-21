@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request
 import json
 
-id = 0
-
 app = Flask("link")
 
 var = {}
@@ -45,6 +43,8 @@ def dump():
 	#print("links: ", links)
 	#print("linkers: ", linkers)
 
+#var funcs
+
 def addVar(name):
 	global sets
 	global sets_count
@@ -69,6 +69,47 @@ def delVar(name):
 	if name in linkers:
 		del linkers[name]
 
+#link funcs
+
+def addLink(link,cid=len(links)):
+	global links
+	global linkers
+
+	i = 0
+
+	for name in link["vars"]:
+		for target in link["vars"]:
+			if name != target:
+				linkers[target].append({
+					"output": name,
+					"func": types[link["name"]][i],
+					"cid": cid,
+					"req": link["vars"],
+					"name": link["name"]
+				})
+		i += 1
+
+	links[cid] = link
+
+	print(linkers)
+
+	return id
+
+def delLink(cid):
+	global links
+	global linkers
+
+	link = links[cid]
+
+	for name in link["vars"]:
+		for target in link["vars"]:
+			if name != target:
+				del linkers[target]
+
+	del links[cid]
+
+#manager funcs
+
 def reset():
 	global vars
 	global sets
@@ -81,34 +122,6 @@ def reset():
 	sets_count = {}
 	links = {}
 	linkers = {}
-
-def addLink(link):
-	global id
-	global links
-	global linkers
-
-	i = 0
-
-	for name in link["vars"]:
-		for target in link["vars"]:
-			if name != target:
-				linkers[target].append({
-					"output": name,
-					"func": types[link["name"]][i],
-					"id": id,
-					"cid": id - i,
-					"req": link["vars"],
-					"name": link["name"]
-				})
-
-		id += 1
-		i += 1
-
-	links[id - i] = link
-
-	print(links)
-
-	return id - i
 
 def setup(file):
 	global var
@@ -125,12 +138,28 @@ def setup(file):
 		if data["vars"][name] != "":
 			var[name] = data["vars"][name]
 
-	for link in data["links"]:
-		print("link: ", link)
-		addLink(link)
+	for cid in data["links"]:
+		addLink(data["links"][cid], cid)
 
 	for name in var:
 		update(name)
+
+def save(file):
+	data = {"vars": {}, "links": {}}
+
+	for v in sets:
+		data["vars"][v] = ""
+
+	for v in var:
+		data["vars"][v] = var[v]
+
+	for cid in links:
+		data["links"][str(cid)] = links[cid]
+
+	with open("data/" + file + ".json", "w") as save_file:
+		save_file.write(json.dumps(data))
+
+#update the maths
 
 def cheak(link, clear=False):
 	vars = []
@@ -146,15 +175,15 @@ def cheak(link, clear=False):
 
 	if link["output"] in sets and sets[link["output"]] != "":
 		if clear:
-			del sets_count[link["output"]][link["id"]]
+			del sets_count[link["output"]][link["cid"]]
 			if len(sets_count[link["output"]]) == 0:
 				sets[link["output"]] = ""
 		else:
 			sets[link["output"]] = link["func"](vars)
-			sets_count[link["output"]][link["id"]] = True
+			sets_count[link["output"]][link["cid"]] = True
 	elif not clear:
 		sets[link["output"]] = link["func"](vars)
-		sets_count[link["output"]] = {link["id"]: True}
+		sets_count[link["output"]] = {link["cid"]: True}
 
 def update(name):
 	for link in linkers[name]:
@@ -165,27 +194,7 @@ def clear(name):
 	for link in linkers[name]:
 		cheak(link, True)
 
-def save(file):
-	data = {"vars": {}, "links": []}
-
-	for v in sets:
-		data["vars"][v] = ""
-	for v in var:
-		data["vars"][v] = var[v]
-
-	saved = []
-
-	for k in linkers:
-		for l in linkers[k]:
-			if l["cid"] not in saved:
-				data["links"].append( {
-					"name" : l["name"],
-					"vars" : l["req"]
-				} )
-				saved.append(l["cid"])
-
-	with open("data/" + file + ".json", "w") as save_file:
-		save_file.write(json.dumps(data))
+#flask functions
 
 @app.route('/')
 def index():
@@ -269,6 +278,25 @@ def new_link():
 	cid = addLink(json.loads(request.data))
 	save("test")
 	return cid
+
+@app.route('/', methods=["DELETE_LINK"])
+def delete_link():
+	delLink(request.data.decode("utf8"))
+	save("test")
+	return ""
+
+@app.route('/', methods=["EDIT_LINK"])
+def edit_link():
+	data = json.loads(request.data)
+	link = link[data["cid"]]
+
+	for key in link["vars"]:
+		del link["vars"][key]
+	for key in data["vars"]:
+		link["vars"][key] = data["vars"]
+
+	save("test")
+	return ""
 
 if __name__ == "__main__":
 	setup("test")
