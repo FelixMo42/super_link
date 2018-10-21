@@ -251,6 +251,10 @@ def load_help():
 def load_about():
 	return render_template("about.html")
 
+@app.route('/doc')
+def doc():
+	return render_template("doc.html")
+
 @app.route('/', methods=["SET_VAR"])
 def set_var():
 	if request.data != "":
@@ -267,16 +271,12 @@ def set_var():
 		else:
 			try:
 				var[data["name"]] = eval(data["value"])
-			except:
-				print("THERE WAS AN ERROR")
-				#clear( data["name"] )
+
 				save(loc)
 				setup(loc)
-				return "Must be a number or Python3 code resulting in a number" + "\n" + json.dumps(sets)
+			except:
+				return "Must be a number or Python3 code resulting in a number"
 
-			#update( data["name"] )
-			save(loc)
-			setup(loc)
 
 	return json.dumps(sets)
 
