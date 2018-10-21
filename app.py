@@ -1,12 +1,13 @@
 from flask import Flask, render_template, request
 import json
 
+id = 0
+
 app = Flask("link")
 
 var = {}
 sets = {}
 sets_count = {}
-links = {}
 linkers = {}
 
 types = {
@@ -87,6 +88,27 @@ def reset():
 	links = {}
 	linkers = {}
 
+def addLink(link):
+	global id
+	global linkers
+
+	i = 0
+
+	for name in link["vars"]:
+		for target in link["vars"]:
+			if name != target:
+				linkers[target].append({
+					"output": name,
+					"func": types[link["name"]][i],
+					"id": id,
+					"cid": id - i,
+					"req": link["vars"],
+					"name": link["name"]
+				})
+
+		id += 1
+		i += 1
+
 def setup(file):
 	global var
 	global links
@@ -102,26 +124,9 @@ def setup(file):
 		if data["vars"][name] != "":
 			var[name] = data["vars"][name]
 
-	id = 0
 	for link in data["links"]:
-		i = 0
-		for v in link["vars"]:
-			#if v == v:
-			links[v].append({
-				"output": v,
-				"func": types[link["name"]][i],
-				"id": id,
-				"cid": id - i,
-				"req": link["vars"],
-				"name": link["name"]
-			})
-			id += 1
-			i += 1
-
-	for v in links:
-		for link in links[v]:
-			for name in link["req"]:
-				linkers[name].append(link)
+		print("link: ", link)
+		addLink(link)
 
 	for name in var:
 		update(name)
@@ -169,14 +174,19 @@ def save(file):
 
 	saved = []
 
-	for k in links:
-		for l in links[k]:
+	print("START SAVING STUFF")
+
+	for k in linkers:
+		#print(linkers[])
+		for l in linkers[k]:
 			if l["cid"] not in saved:
 				data["links"].append( {
 					"name" : l["name"],
 					"vars" : l["req"]
 				} )
 				saved.append(l["cid"])
+
+	print("END SAVING STUFF")
 
 	with open("data/" + file + ".json", "w") as save_file:
 		save_file.write(json.dumps(data))
@@ -263,6 +273,12 @@ def rename_var():
 	dump()
 	save("test")
 	pass
+
+@app.route('/', methods=["NEW_LINK"])
+def new_link():
+	addLink(json.loads(request.data))
+	save("test")
+	return ""
 
 if __name__ == "__main__":
 	setup("test")

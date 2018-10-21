@@ -18,8 +18,8 @@
 					<i class="fa fa-caret-down"></i>
 				</button>
 				<div class="dropdown-content">
-					<a href="#">add</a>
-					<a href="#">subtract</a>
+					<a onclick="newLink('add')">add</a>
+					<a onclick="newLink('subtract')">subtract</a>
 					<a href="#">multiply</a>
 					<a href="#">divide</a>
 				</div>
@@ -44,7 +44,7 @@
 		<hr>
 
 		<div id="links">
-			
+
 		</div>
 
 		<!-- POP UPS -->
@@ -58,6 +58,16 @@
 		<div class="popup" id="varMenu">
 			<button id="varMenu_rename">rename</button><br>
 			<button id="varMenu_delete">delete</button>
+		</div>
+
+		<div class="popup" id="linkEdit">
+			<input></input>
+			+
+			<input></input>
+			=
+			<input></input>
+			<br>
+			<button id="link_save" onclick="saveLink()">save</button>
 		</div>
 	</body>
 </html>
