@@ -162,6 +162,15 @@ function linkMenu(el) {
 
 		Http.open("DELETE_LINK", url);
 		Http.send( el.id );
+
+		for(var child = el.firstChild; child !== null; child = child.nextSibling) {
+			if (child.nodeName == "SPAN" && document.getElementById(child.innerHTML).value != "") {
+				value = document.getElementById(child.innerHTML).value
+				update(document.getElementById(child.innerHTML).id, "")
+				update(document.getElementById(child.innerHTML).id, value)
+				break
+			}
+		}
 	}
 	document.getElementById("linkMenu_rename").onclick = function() {
 	}

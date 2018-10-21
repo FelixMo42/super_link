@@ -1,5 +1,7 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Markup
 import json
+
+id = 0
 
 app = Flask("link")
 
@@ -36,6 +38,11 @@ types = {
 	]
 }
 
+for t in types:
+	print(t)
+	types[t][-1] = Markup(types[t][-1].replace("%s", "<span class=''>%s</span>"))
+	print(types[t][-1])
+
 def dump():
 	print("var: ", var)
 	print("sets: ", sets)
@@ -71,7 +78,8 @@ def delVar(name):
 
 #link funcs
 
-def addLink(link,cid=len(links)):
+def addLink(link,cid=id):
+	global id
 	global links
 	global linkers
 
@@ -89,6 +97,8 @@ def addLink(link,cid=len(links)):
 				})
 		i += 1
 
+	id += 1
+
 	links[cid] = link
 
 	print(linkers)
@@ -102,9 +112,12 @@ def delLink(cid):
 	link = links[cid]
 
 	for name in link["vars"]:
-		for target in link["vars"]:
-			if name != target:
-				del linkers[target]
+		clear(name)
+		for	i in range(len(linkers[name])):
+			print("KEY", i)
+			if linkers[name][i]["cid"] == cid:
+				del linkers[name][i]
+				break
 
 	del links[cid]
 
@@ -124,6 +137,7 @@ def reset():
 	linkers = {}
 
 def setup(file):
+	global id
 	global var
 	global links
 	global linkers
@@ -132,6 +146,8 @@ def setup(file):
 
 	with open("data/" + file + ".json", 'r') as load_file:
 		data = json.loads(load_file.read())
+
+	id = data["id"]
 
 	for name in data["vars"]:
 		addVar(name)
@@ -145,7 +161,7 @@ def setup(file):
 		update(name)
 
 def save(file):
-	data = {"vars": {}, "links": {}}
+	data = {"vars": {}, "links": {}, "id": id}
 
 	for v in sets:
 		data["vars"][v] = ""
@@ -277,7 +293,7 @@ def new_link():
 	print(request.data)
 	cid = addLink(json.loads(request.data))
 	save("test")
-	return cid
+	return str(cid)
 
 @app.route('/', methods=["DELETE_LINK"])
 def delete_link():
