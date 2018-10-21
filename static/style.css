@@ -86,6 +86,10 @@ input {
     background-color: lightseagreen
 }
 
+input::placeholder {
+    color: black;
+}
+
 .varName {
     color:black;
     margin-left: 10px;
@@ -98,7 +102,7 @@ input {
 
 body {
     background-image: linear-gradient(to right,
-        rgb(200, 167, 169),rgb(204, 171, 173));
+        rgb(67, 68, 71), rgb(68, 68, 68);
 }
 
 .wrong {
