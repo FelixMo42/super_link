@@ -29,8 +29,11 @@
     margin: 0;
 }
 
-.header a:hover, .dropdown:hover .dropbtn {
-    background-color: red;
+.dropdown:hover .dropbtn {
+    background-image: radial-gradient(rgb(146, 96, 202),rgb(110, 114, 159));
+}
+.header a:hover .dropbtn {
+    background-image: radial-gradient(rgb(320, 64, 84),rgb(200, 64, 84));
 }
 
 .dropdown-content {
@@ -63,14 +66,41 @@
     display: none;
 
     position: fixed;
-    top: 50%;
+    top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
-
-    border: 3px solid #f1f1f1;
     z-index: 9;
+
+    background-color: rgb(28, 170, 139);
+    border: 3px solid lightblue;
+    font-family: "Times New Roman", Times, serif;
+    border-radius: 10px;
+    padding: 5px 7px;
+}
+
+input {
+   padding: 3px;
+   margin-top: 5px;
+    border: 2px outset;
+    border-color: seagreen;
+    background-color: lightseagreen
+}
+
+.varName {
+    color:black;
+    margin-left: 10px;
+    font-family: "Times New Roman", Times, serif;
+    background-color: lightblue;
+    border: solid 1px gray;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+body {
+    background-image: linear-gradient(to right,
+        rgb(200, 167, 169),rgb(204, 171, 173));
 }
 
 .wrong {
-    background-color: red;
+    background-image: radial-gradient(rgb(320, 64, 84),rgb(200, 64, 84));
 }
