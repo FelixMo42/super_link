@@ -55,3 +55,30 @@ function newVar() {
 	document.getElementById("varNamer_name").select()
 	document.getElementById("varNamer_name").onchange = newVarCallback
 }
+
+function varMenu(el) {
+	document.getElementById("varMenu").style.display = "block";
+	document.getElementById("varMenu_delete").onclick = function() {
+		el.parentNode.removeChild(el)
+		document.getElementById("varMenu").style.display = "none";
+	}
+	document.getElementById("varMenu_rename").onclick = function() {
+		document.getElementById("varMenu").style.display = "none";
+		document.getElementById("varNamer").style.display = "block";
+		document.getElementById("varNamer_name").select()
+		document.getElementById("varNamer_name").onchange = function() {
+			name = this.value
+			for(var child = el.firstChild; child !== null; child = child.nextSibling) {
+				console.log(child)
+				if (child.nodeName == "SPAN") {
+					child.innerHTML = name
+				} else if (child.nodeName == "INPUT") {
+					child.id = name
+				}
+			}
+			//console.log(el.childNodes[3].id, name)
+			//console.log(el.inner.replace(el.childNodes[3].id, name))
+			//el.innerHTML.replace(el.childNodes[3].id, name);
+		}
+	}
+}

@@ -28,8 +28,15 @@
 
 		<div id="variables">
 			{% for name in variables %}
-				<span class="varName">{{name}}</span>:
-				<input id="{{name}}" value="{{value[name]}}" placeholder="{{sets[name]}}" onchange="update(this.id, this.value)">
+				<span oncontextmenu="varMenu(this); return false;">
+					<span class="varName">{{name}}</span>:
+					<input
+						id="{{name}}"
+						value="{{value[name]}}"
+						placeholder="{{sets[name]}}"
+						onchange="update(this.id, this.value)"
+					>
+				</span>
 				<br>
 			{% endfor %}
 		</div>
@@ -43,6 +50,11 @@
 		<div class="popup" id="varNamer">
 			<label>Enter variable name:</label><br>
 			<input type="text" id="varNamer_name" placeholder="variable name">
+		</div>
+
+		<div class="popup" id="varMenu">
+			<button id="varMenu_rename">rename</button><br>
+			<button id="varMenu_delete">delete</button>
 		</div>
 	</body>
 </html>
