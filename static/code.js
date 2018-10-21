@@ -119,6 +119,28 @@ function varMenu(el) {
 					child.id = this.value
 				}
 			}
+
+			el.setAttribute("value", this.value)
 		}
 	}
+}
+
+function newLink(type) {
+	showPopup("linkEdit")
+	document.getElementById("linkEdit").setAttribute("type", type)
+}
+
+function saveLink(el) {
+	vars = {}
+
+	for(var child = el.firstChild; child !== null; child = child.nextSibling) {
+		if (child.nodeName == "INPUT") {
+			vars[child.value] = ""
+		}
+	}
+
+	data = {"name": document.getElementById("linkEdit").getAttribute("type"), "vars": vars}
+
+	Http.open("NEW_LINK", url);
+	Http.send( JSON.stringify(data) );
 }

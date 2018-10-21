@@ -253,13 +253,6 @@ def rename_var():
 			sets_count[data["new"]] = sets_count[data["old"]]
 			del sets_count[data["old"]]
 
-	'''for key in links:
-		if key == data["old"]:
-			links[data["new"]] = links[data["old"]]
-			for link in links[data["new"]]:
-				if
-			del links[data["old"]]'''
-
 	for key in linkers:
 		for link in linkers[key]:
 			if link["output"] == data["old"]:
@@ -276,6 +269,7 @@ def rename_var():
 
 @app.route('/', methods=["NEW_LINK"])
 def new_link():
+	print(request.data)
 	addLink(json.loads(request.data))
 	save("test")
 	return ""
