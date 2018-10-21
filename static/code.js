@@ -2,11 +2,13 @@ var Http = new XMLHttpRequest();
 const url = window.location.href
 
 String.prototype.deentitize = function() {
+	console.log(this)
     var ret = this.replace(/&gt;/g, '>');
     ret = ret.replace(/&lt;/g, '<');
     ret = ret.replace(/&quot;/g, '"');
     ret = ret.replace(/&apos;/g, "'");
     ret = ret.replace(/&amp;/g, '&');
+	ret = ret.replace(/&#34;/g, '"');
     return ret;
 };
 

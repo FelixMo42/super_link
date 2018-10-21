@@ -35,6 +35,16 @@ types = {
 		lambda a : a[2] * a[0],
 		lambda a : a[0] / a[1],
 		"%s / %s = %s"
+	],#
+	"temp_CeFa": [
+		lambda a : ( (a[0] * 5/9.0) + 32),
+		lambda a : ( (a[1] * 9/5.0) + 32),
+		"%s°C = %s°F"
+	],
+	"dist_MiKi": [
+		lambda a : a[0] / 0.62137119,
+		lambda a : a[1] * 0.62137119,
+		"%sMi = %sKm"
 	]
 }
 
@@ -111,16 +121,19 @@ def delLink(cid):
 
 	link = links[cid]
 
-	for name in link["vars"]:
+
+	save("test")
+	setup("test")
+
+	'''for name in link["vars"]:
 		clear(name)
 		i = 0
 		print(linkers)
 		while i < len(linkers[name]):
-			#print(i)
 			if linkers[name][i]["cid"] == cid:
 				del linkers[name][i]
 			else:
-				i += 1
+				i += 1'''
 
 	del links[cid]
 
@@ -307,7 +320,7 @@ def new_link():
 
 	dump()
 
-	return "<span class='link' id='" + links[cid]["name"] + "' oncontextmenu='linkMenu(this); return false;'>" + types[links[cid]["name"]][-1] % tuple(list(links[cid]["vars"])) + "<br></span>"
+	return '<span class="link" id="' + links[cid]['name'] + '" oncontextmenu="linkMenu(this); return false;">' + types[links[cid]['name']][-1] % tuple(list(links[cid]['vars'])) + '<br></span>'
 
 @app.route('/', methods=["DELETE_LINK"])
 def delete_link():

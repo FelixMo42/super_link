@@ -15,8 +15,11 @@
 		<div class="header">
 			<a>load</a>
 			<a onclick="newVar()">new variable</a>
+
+			<a class="line"></a>
+
 			<div class="dropdown">
-				<button class="dropbtn">Basic Math
+				<button class="dropbtn">basic math
 					<i class="fa fa-caret-down"></i>
 				</button>
 				<div class="dropdown-content">
@@ -26,6 +29,21 @@
 					<a onclick="newLink('divide', '<input> / <input> = <input>')">divide</a>
 				</div>
 			</div>
+
+			<div class="dropdown">
+				<button class="dropbtn">units
+					<i class="fa fa-caret-down"></i>
+				</button>
+				<div class="dropdown-content">
+					<a onclick="newLink('temp_CeFa', '<input>°C = <input>°F')">celcius <> fahrenheit</a>
+					<a onclick="newLink('dist_MiKi', '<input>mi = <input>km')">miles <> kilometers</a>
+				</div>
+			</div>
+
+			<a class="line"></a>
+
+			<a>help</a>
+			<a>about</a>
 		</div>
 
 		<div id="variables">

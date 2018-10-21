@@ -13,6 +13,16 @@
     text-decoration: none;
 }
 
+.header a:hover {
+    cursor: pointer;
+}
+
+.header a.line{
+    background-color: darkblue;
+    margin-top: 2.5px;
+    padding: 20px 2px 20px 2px;
+}
+
 .dropdown {
     float: left;
     overflow: hidden;
@@ -29,9 +39,10 @@
     margin: 0;
 }
 
-.dropdown:hover .dropbtn {
+.dropdown:hover .dropbtn, .header a:hover {
     background-image: radial-gradient(rgb(146, 96, 202),rgb(110, 114, 159));
 }
+
 .header a:hover .dropbtn {
     background-image: radial-gradient(rgb(320, 64, 84),rgb(200, 64, 84));
 }
@@ -110,14 +121,14 @@ input::placeholder {
 }
 
 #shade {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 5; /* Sit on top */
+    display: none;
+    position: fixed;
+    z-index: 5;
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
 }
