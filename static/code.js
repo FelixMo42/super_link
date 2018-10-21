@@ -1,6 +1,20 @@
 var Http = new XMLHttpRequest();
 const url = window.location.href
 
+function showPopup(popup) {
+	document.getElementById("shade").style.display = "block";
+	document.getElementById(popup).style.display = "block";
+
+	document.getElementById("shade").onclick = function() {
+		hidePopup(popup)
+	}
+}
+
+function hidePopup(popup) {
+	document.getElementById("shade").style.display = "none";
+	document.getElementById(popup).style.display = "none";
+}
+
 function update(name, value) {
 	data = {"name": name, "value": value}
 
@@ -34,7 +48,7 @@ function update(name, value) {
 }
 
 function newVar() {
-	document.getElementById("varNamer").style.display = "block";
+	showPopup("varNamer")
 	document.getElementById("varNamer_name").select()
 	document.getElementById("varNamer_name").onchange = function() {
 		name = this.value
@@ -52,7 +66,7 @@ function newVar() {
 		}
 
 		document.getElementById("variables").innerHTML += name + ": <input id='" + name + "' onchange='update(this.id, this.value)'><br>"
-		document.getElementById("varNamer").style.display = "none"
+		hidePopup("varNamer")
 
 		Http.open("NEW_VAR", url);
 		Http.send( name );
@@ -60,17 +74,17 @@ function newVar() {
 }
 
 function varMenu(el) {
-	document.getElementById("varMenu").style.display = "block";
+	showPopup("varMenu")
 	document.getElementById("varMenu_delete").onclick = function() {
 		el.parentNode.removeChild(el)
-		document.getElementById("varMenu").style.display = "none";
+		hidePopup("varMenu")
 
 		Http.open("DELETE_VAR", url);
 		Http.send( el.getAttribute("value") );
 	}
 	document.getElementById("varMenu_rename").onclick = function() {
-		document.getElementById("varMenu").style.display = "none";
-		document.getElementById("varNamer").style.display = "block";
+		hidePopup("varMenu")
+		showPopup("varNamer")
 		document.getElementById("varNamer_name").select()
 		document.getElementById("varNamer_name").onchange = function() {
 			if (this.value.replace(/\s+/g, '') == "") {
