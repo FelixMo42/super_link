@@ -39,9 +39,7 @@ types = {
 }
 
 for t in types:
-	print(t)
 	types[t][-1] = Markup(types[t][-1].replace("%s", "<span class=''>%s</span>"))
-	print(types[t][-1])
 
 def dump():
 	print("var: ", var)
@@ -101,8 +99,6 @@ def addLink(link,cid=id):
 
 	links[cid] = link
 
-	print(linkers)
-
 	return id
 
 def delLink(cid):
@@ -113,11 +109,15 @@ def delLink(cid):
 
 	for name in link["vars"]:
 		clear(name)
-		for	i in range(len(linkers[name])):
-			print("KEY", i)
+		i = 0
+		print(linkers)
+		while i < len(linkers[name]):
+			#print(i)
 			if linkers[name][i]["cid"] == cid:
 				del linkers[name][i]
-				break
+			else:
+				i += 1
+
 
 	del links[cid]
 

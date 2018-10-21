@@ -156,12 +156,57 @@ function saveLink(el) {
 function linkMenu(el) {
 	showPopup("linkMenu")
 
+	document.getElementById("linkMenu_edit").onclick = function() {
+		hidePopup("linkMenu")
+		showPopup("linkEdit")
+
+		html = ""
+
+		for(var child = el.firstChild; child !== null; child = child.nextSibling) {
+			if (child.nodeName == "SPAN") {
+				html += "<input value='" + child.innerHTML + "'></input>"
+			} else if (child.nodeName == "#text") {
+				console.log(child)
+				html += child.wholeText
+			}
+		}
+
+		document.getElementById("linkEdit_span").innerHTML = html
+		document.getElementById("link_save").onclick = function() {
+			el.parentNode.removeChild(el)
+			hidePopup("linkMenu")
+
+			for(var child = el.firstChild; child !== null; child = child.nextSibling) {
+				if (child.nodeName == "SPAN" && document.getElementById(child.innerHTML).value != "") {
+					value = document.getElementById(child.innerHTML).value
+					update(document.getElementById(child.innerHTML).id, "")
+					update(document.getElementById(child.innerHTML).id, value)
+					break
+				}
+			}
+
+			Http.open("DELETE_LINK", url);
+			Http.send( el.id );
+
+			/////////
+
+			vars = {}
+
+			for(var child = document.getElementById("linkEdit_span").firstChild; child !== null; child = child.nextSibling) {
+				if (child.nodeName == "INPUT") {
+					vars[child.value] = ""
+				}
+			}
+
+			data = {"name": "add", "vars": vars}
+
+			Http.open("NEW_LINK", url);
+			Http.send( JSON.stringify(data) );
+		}
+	}
 	document.getElementById("linkMenu_delete").onclick = function() {
 		el.parentNode.removeChild(el)
 		hidePopup("linkMenu")
-
-		Http.open("DELETE_LINK", url);
-		Http.send( el.id );
 
 		for(var child = el.firstChild; child !== null; child = child.nextSibling) {
 			if (child.nodeName == "SPAN" && document.getElementById(child.innerHTML).value != "") {
@@ -171,7 +216,8 @@ function linkMenu(el) {
 				break
 			}
 		}
-	}
-	document.getElementById("linkMenu_rename").onclick = function() {
+
+		Http.open("DELETE_LINK", url);
+		Http.send( el.id );
 	}
 }
