@@ -65,7 +65,7 @@
 
 		<div id="links">
 			{% for name in links %}
-				<span class="link" id="{{name}}" oncontextmenu="linkMenu(this); return false;">
+				<span class="link" id="{{name}}" type="{{links[name]['name']}}" oncontextmenu="linkMenu(this); return false;">
 					{{types[links[name]["name"]][-1] % tuple(list(links[name]["vars"]))}}
 					<br>
 				</span>

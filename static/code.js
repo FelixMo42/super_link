@@ -2,7 +2,6 @@ var Http = new XMLHttpRequest();
 const url = window.location.href
 
 String.prototype.deentitize = function() {
-	console.log(this)
     var ret = this.replace(/&gt;/g, '>');
     ret = ret.replace(/&lt;/g, '<');
     ret = ret.replace(/&quot;/g, '"');
@@ -148,7 +147,6 @@ function newLink(type, form) {
 	showPopup("linkEdit")
 	document.getElementById("linkEdit").setAttribute("type", type)
 	document.getElementById("linkEdit_span").innerHTML = form
-
 }
 
 function saveLink(el) {
@@ -198,41 +196,41 @@ function linkMenu(el) {
 			el.parentNode.removeChild(el)
 			hidePopup("linkEdit")
 
-			for(var child = el.firstChild; child !== null; child = child.nextSibling) {
-				if (child.nodeName == "SPAN" && document.getElementById(child.innerHTML).value != "") {
-					value = document.getElementById(child.innerHTML).value
-					update(document.getElementById(child.innerHTML).id, "")
-					update(document.getElementById(child.innerHTML).id, value)
-					break
-				}
-			}
-
 			Http.open("DELETE_LINK", url);
 			Http.send( el.id );
-
-			/////////
-
-			vars = {}
-			name = "add"
-
-			for(var child = document.getElementById("linkEdit_span").firstChild; child !== null; child = child.nextSibling) {
-				if (child.nodeName == "INPUT") {
-					vars[child.value] = ""
-				}
-			}
-
-			data = {"name": name, "vars": vars}
-
-			Http.open("NEW_LINK", url);
-			Http.send( JSON.stringify(data) );
 			Http.onreadystatechange = (e) => {
-				if (Http.responseText == "" || Http.readyState != 4) {
+				console.log("YTGRRY", Http.readyState)
+
+				if (Http.readyState != 4) {
 					return
 				}
 
-				console.log(Http.responseText)
+				console.log("YTGRRY", "happen?")
 
-				document.getElementById("links").innerHTML += Http.responseText.deentitize()
+				vars = {}
+				name = el.getAttribute("type")
+
+				for(var child = document.getElementById("linkEdit_span").firstChild; child !== null; child = child.nextSibling) {
+					if (child.nodeName == "INPUT") {
+						vars[child.value] = ""
+					}
+				}
+
+				data = {"name": name, "vars": vars}
+
+				console.log(data)
+
+				Http.open("NEW_LINK", url);
+				Http.send( JSON.stringify(data) );
+				Http.onreadystatechange = (e) => {
+					if (Http.responseText == "" || Http.readyState != 4) {
+						return
+					}
+
+					console.log(Http.responseText)
+
+					document.getElementById("links").innerHTML += Http.responseText.deentitize()
+				}
 			}
 		}
 	}
