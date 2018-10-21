@@ -1,5 +1,5 @@
 # Super Link
-Create links between variables like never before!
+Super Link is an online platform for making anything that connects variables, from a+b to a's inverse mod b.
 
 ### ABOUT
 
