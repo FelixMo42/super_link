@@ -146,6 +146,7 @@ function newLink(type, form) {
 	showPopup("linkEdit")
 	document.getElementById("linkEdit").setAttribute("type", type)
 	document.getElementById("linkEdit_span").innerHTML = form
+
 }
 
 function saveLink(el) {
@@ -158,6 +159,8 @@ function saveLink(el) {
 	}
 
 	data = {"name": document.getElementById("linkEdit").getAttribute("type"), "vars": vars}
+
+	hidePopup("linkEdit")
 
 	Http.open("NEW_LINK", url);
 	Http.send( JSON.stringify(data) );
@@ -191,7 +194,7 @@ function linkMenu(el) {
 		document.getElementById("linkEdit_span").innerHTML = html
 		document.getElementById("link_save").onclick = function() {
 			el.parentNode.removeChild(el)
-			hidePopup("linkMenu")
+			hidePopup("linkEdit")
 
 			for(var child = el.firstChild; child !== null; child = child.nextSibling) {
 				if (child.nodeName == "SPAN" && document.getElementById(child.innerHTML).value != "") {
