@@ -44,7 +44,11 @@
 		<hr>
 
 		<div id="links">
-
+			{% for name in links %}
+				<span class="link">
+					{{types[links[name]["name"]][-1] % tuple(list(links[name]["vars"]))}}
+				</span>
+			{% endfor %}
 		</div>
 
 		<!-- POP UPS -->

@@ -8,28 +8,33 @@ app = Flask("link")
 var = {}
 sets = {}
 sets_count = {}
+links = {}
 linkers = {}
 
 types = {
-	"add":  [
-		lambda a : a[2] - a[1], #0
-		lambda a : a[2] - a[0], #1
-		lambda a : a[0] + a[1] #2
+	"add": [
+		lambda a : a[2] - a[1],
+		lambda a : a[2] - a[0],
+		lambda a : a[0] + a[1],
+		"%s + %s = %s"
 	],
-	"subtract":  [
+	"subtract": [
 		lambda a : a[2] + a[1],
 		lambda a : a[2] + a[0],
-		lambda a : a[0] - a[1]
+		lambda a : a[0] - a[1],
+		"%s - %s = %s"
 	],
-	"multiply":  [
+	"multiply": [
 		lambda a : a[2] / a[1],
 		lambda a : a[2] / a[0],
-		lambda a : a[0] * a[1]
+		lambda a : a[0] * a[1],
+		"%s * %s = %s"
 	],
-	"divide":  [
+	"divide": [
 		lambda a : a[2] * a[1],
 		lambda a : a[2] * a[0],
-		lambda a : a[0] / a[1]
+		lambda a : a[0] / a[1],
+		"%s / %s = %s"
 	]
 }
 
@@ -43,36 +48,25 @@ def dump():
 def addVar(name):
 	global sets
 	global sets_count
-	global links
 	global linkers
 
 	sets[name] = ""
 	sets_count[name] = {}
-	links[name] = []
 	linkers[name] = []
 
 def delVar(name):
 	global vars
 	global sets
 	global sets_count
-	global links
 	global linkers
 
 	if name in var:
-		print("sets")
 		del var[name]
 	if name in sets:
-		print("sets")
 		del sets[name]
 	if name in sets_count:
-		print("sets_count")
 		del sets_count[name]
-	if name in links:
-		print("links")
-		print(links[name])
-		del links[name]
 	if name in linkers:
-		print("linkers")
 		del linkers[name]
 
 def reset():
@@ -90,6 +84,7 @@ def reset():
 
 def addLink(link):
 	global id
+	global links
 	global linkers
 
 	i = 0
@@ -108,6 +103,12 @@ def addLink(link):
 
 		id += 1
 		i += 1
+
+	links[id - i] = link
+
+	print(links)
+
+	return id - i
 
 def setup(file):
 	global var
@@ -174,10 +175,7 @@ def save(file):
 
 	saved = []
 
-	print("START SAVING STUFF")
-
 	for k in linkers:
-		#print(linkers[])
 		for l in linkers[k]:
 			if l["cid"] not in saved:
 				data["links"].append( {
@@ -185,8 +183,6 @@ def save(file):
 					"vars" : l["req"]
 				} )
 				saved.append(l["cid"])
-
-	print("END SAVING STUFF")
 
 	with open("data/" + file + ".json", "w") as save_file:
 		save_file.write(json.dumps(data))
@@ -196,7 +192,7 @@ def index():
 	save("test")
 	setup("test")
 	dump()
-	return render_template("index.html", variables=sets, value=var, sets=sets)
+	return render_template("index.html", variables=sets, value=var, sets=sets, links=links, types=types, list=list, tuple=tuple)
 
 @app.route('/', methods=["SET_VAR"])
 def set_var():
@@ -270,9 +266,9 @@ def rename_var():
 @app.route('/', methods=["NEW_LINK"])
 def new_link():
 	print(request.data)
-	addLink(json.loads(request.data))
+	cid = addLink(json.loads(request.data))
 	save("test")
-	return ""
+	return cid
 
 if __name__ == "__main__":
 	setup("test")
