@@ -20,7 +20,7 @@
 				<div class="dropdown-content">
 					{% for filename in files %}
 						{% if filename != "do_not_save_here!_this_is_for_real_time_data!23b87x4r287.json" %}
-							<a>{{filename}}</a>
+							<a onclick="f_load('{{filename.replace('.json','')}}')">{{filename.replace(".json","")}}</a>
 						{% endif %}
 					{% endfor %}
 				</div>
@@ -32,10 +32,10 @@
 				<div class="dropdown-content">
 					{% for filename in files %}
 						{% if filename != "do_not_save_here!_this_is_for_real_time_data!23b87x4r287.json" %}
-							<a>{{filename}}</a>
+							<a onclick="f_save('{{filename.replace('.json','')}}')">{{filename.replace(".json","")}}</a>
 						{% endif %}
 					{% endfor %}
-					<a onclick="newLink('dist_MiKi', '<input>mi = <input>km')">+ new file</a>
+					<a onclick="">+ new file</a>
 				</div>
 			</div>
 

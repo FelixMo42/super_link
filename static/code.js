@@ -283,3 +283,22 @@ function linkMenu(el) {
 		Http.send( el.id );
 	}
 }
+
+//saving
+
+function f_load(file) {
+	Http.open("DATA_LOAD", url);
+	Http.send( file );
+	Http.onreadystatechange = (e) => {
+		if (Http.readyState != 4) {
+			return
+		}
+
+		location.reload();
+	}
+}
+
+function f_save(file) {
+	Http.open("DATA_SAVE", url);
+	Http.send( file );
+}

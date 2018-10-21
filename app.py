@@ -361,4 +361,18 @@ def edit_link():
 	save(loc)
 	return ""
 
+@app.route('/', methods=["DATA_SAVE"])
+def data_save():
+	save(request.data.decode("utf8"))
+
+	return ""
+
+@app.route('/', methods=["DATA_LOAD"])
+def data_load():
+	print(request.data.decode("utf8"))
+	setup(request.data.decode("utf8"))
+	save(loc)
+
+	return ""
+
 app.run(host='0.0.0.0', port=8080)
