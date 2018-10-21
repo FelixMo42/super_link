@@ -302,3 +302,7 @@ function f_save(file) {
 	Http.open("DATA_SAVE", url);
 	Http.send( file );
 }
+
+function saveFile() {
+	showPopup("fileSave")
+}

@@ -35,7 +35,7 @@
 							<a onclick="f_save('{{filename.replace('.json','')}}')">{{filename.replace(".json","")}}</a>
 						{% endif %}
 					{% endfor %}
-					<a onclick="">+ new file</a>
+					<a onclick="saveFile()">+ new file</a>
 				</div>
 			</div>
 
@@ -121,6 +121,11 @@
 		<div class="popup" id="linkMenu">
 			<button id="linkMenu_edit">edit</button><br>
 			<button id="linkMenu_delete">delete</button>
+		</div>
+
+		<div class="popup" id="fileSave">
+			<label>file path:</label>
+			<input id="fileSave_name" onchange="f_save(this.value); hidePopup('')"></input>
 		</div>
 	</body>
 </html>
