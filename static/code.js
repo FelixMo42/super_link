@@ -142,15 +142,16 @@ function varMenu(el) {
 
 //link funcs
 
-function newLink(type) {
+function newLink(type, form) {
 	showPopup("linkEdit")
 	document.getElementById("linkEdit").setAttribute("type", type)
+	document.getElementById("linkEdit_span").innerHTML = form
 }
 
 function saveLink(el) {
 	vars = {}
 
-	for(var child = el.firstChild; child !== null; child = child.nextSibling) {
+	for(var child = document.getElementById("linkEdit_span").firstChild; child !== null; child = child.nextSibling) {
 		if (child.nodeName == "INPUT") {
 			vars[child.value] = ""
 		}

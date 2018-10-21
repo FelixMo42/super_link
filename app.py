@@ -192,6 +192,7 @@ def cheak(link, clear=False):
 		if clear:
 			del sets_count[link["output"]][link["cid"]]
 			if len(sets_count[link["output"]]) == 0:
+				clear(link["output"])
 				sets[link["output"]] = ""
 		else:
 			sets[link["output"]] = link["func"](vars)
@@ -199,6 +200,7 @@ def cheak(link, clear=False):
 	elif not clear:
 		sets[link["output"]] = link["func"](vars)
 		sets_count[link["output"]] = {link["cid"]: True}
+		update(link["output"])
 
 def update(name):
 	for link in linkers[name]:
@@ -292,7 +294,7 @@ def new_link():
 	print(request.data)
 	cid = addLink(json.loads(request.data))
 	save("test")
-	return "<span class='link' id='" + links[cid]["name"] + "' oncontextmenu='linkMenu(this); return false;'>" + types[links[cid]["name"]][-1] % tuple(list(links[cid]["vars"])) + "</span>"
+	return "<span class='link' id='" + links[cid]["name"] + "' oncontextmenu='linkMenu(this); return false;'>" + types[links[cid]["name"]][-1] % tuple(list(links[cid]["vars"])) + "<br></span>"
 
 @app.route('/', methods=["DELETE_LINK"])
 def delete_link():
