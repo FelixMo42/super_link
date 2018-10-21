@@ -65,7 +65,13 @@ function newVar() {
 			return
 		}
 
-		document.getElementById("variables").innerHTML += name + ": <input id='" + name + "' onchange='update(this.id, this.value)'><br>"
+		varHTML  = "<span value='" + name + "' oncontextmenu='varMenu(this); return false;'>"
+		varHTML += " <span class='varName'>" + name + "</span>: "
+		varHTML += " <input id='" + name + "' value='' placeholder='' onchange='update(this.id, this.value)'>"
+		varHTML += " <br>"
+		varHTML += "</span>"
+
+		document.getElementById("variables").innerHTML += varHTML
 		hidePopup("varNamer")
 
 		Http.open("NEW_VAR", url);
