@@ -3,7 +3,7 @@ import json
 
 id = 0
 
-app = Flask("link")
+app = Flask('app')
 
 var = {}
 sets = {}
@@ -40,6 +40,8 @@ types = {
 
 for t in types:
 	types[t][-1] = Markup(types[t][-1].replace("%s", "<span class=''>%s</span>"))
+
+##
 
 def dump():
 	print("var: ", var)
@@ -120,60 +122,6 @@ def delLink(cid):
 
 	del links[cid]
 
-#manager funcs
-
-def reset():
-	global vars
-	global sets
-	global sets_count
-	global links
-	global linkers
-
-	var = {}
-	sets = {}
-	sets_count = {}
-	links = {}
-	linkers = {}
-
-def setup(file):
-	global id
-	global var
-	global links
-	global linkers
-
-	reset()
-
-	with open("data/" + file + ".json", 'r') as load_file:
-		data = json.loads(load_file.read())
-
-	id = data["id"]
-
-	for name in data["vars"]:
-		addVar(name)
-		if data["vars"][name] != "":
-			var[name] = data["vars"][name]
-
-	for cid in data["links"]:
-		addLink(data["links"][cid], cid)
-
-	for name in var:
-		update(name)
-
-def save(file):
-	data = {"vars": {}, "links": {}, "id": id}
-
-	for v in sets:
-		data["vars"][v] = ""
-
-	for v in var:
-		data["vars"][v] = var[v]
-
-	for cid in links:
-		data["links"][str(cid)] = links[cid]
-
-	with open("data/" + file + ".json", "w") as save_file:
-		save_file.write(json.dumps(data))
-
 #update the maths
 
 def cheak(link, empty=False):
@@ -211,13 +159,67 @@ def clear(name):
 	for link in linkers[name]:
 		cheak(link, True)
 
-#flask functions
+#manager funcs
+
+def reset():
+	global vars
+	global sets
+	global sets_count
+	global links
+	global linkers
+
+	var = {}
+	sets = {}
+	sets_count = {}
+	links = {}
+	linkers = {}
+
+def setup(file):
+	global id
+	global var
+	global links
+	global linkers
+
+	reset()
+
+	with open("data/" + file + ".json", 'r') as load_file:
+		data = json.loads(load_file.read())
+		print(data)
+
+	id = data["id"]
+
+	for name in data["vars"]:
+		addVar(name)
+		if data["vars"][name] != "":
+			var[name] = data["vars"][name]
+
+	for cid in data["links"]:
+		addLink(data["links"][cid], cid)
+
+	for name in var:
+		update(name)
+
+def save(file):
+	data = {"vars": {}, "links": {}, "id": id}
+
+	for v in sets:
+		data["vars"][v] = ""
+
+	for v in var:
+		data["vars"][v] = var[v]
+
+	for cid in links:
+		data["links"][str(cid)] = links[cid]
+
+	with open("data/" + file + ".json", "w") as save_file:
+		save_file.write(json.dumps(data))
+
+##
 
 @app.route('/')
 def index():
 	save("test")
 	setup("test")
-	dump()
 	return render_template("index.html", variables=sets, value=var, sets=sets, links=links, types=types, list=list, tuple=tuple)
 
 @app.route('/', methods=["SET_VAR"])
@@ -292,7 +294,7 @@ def rename_var():
 
 	dump()
 	save("test")
-	pass
+	return ""
 
 @app.route('/', methods=["NEW_LINK"])
 def new_link():
@@ -320,6 +322,4 @@ def edit_link():
 	save("test")
 	return ""
 
-if __name__ == "__main__":
-	setup("test")
-	app.run()
+app.run(host='0.0.0.0', port=8080)

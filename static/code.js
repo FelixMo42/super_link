@@ -110,12 +110,13 @@ function varMenu(el) {
 		document.getElementById("varNamer_name").onchange = function() {
 			if (this.value.replace(/\s+/g, '') == "") {
 				alert("You must enter a variable name!")
-				document.getElementById("varNamer_name").select()
 				return
 			}
 
-			if (document.getElementById(name)) {
+			console.log(document.getElementById(this.value))
+			if (document.getElementById(this.value)) {
 				alert("Name is allready taken!")
+
 				document.getElementById("varNamer_name").select()
 				return
 			}
@@ -123,8 +124,7 @@ function varMenu(el) {
 			Http.open("RENAME_VAR", url);
 			Http.send(JSON.stringify({"old": el.getAttribute("value"), "new": this.value}));
 
-			console.log(el.getAttribute("value"))
-			console.log(JSON.stringify({"old": el.getAttribute("value"), "new": this.value}))
+			hidePopup("varNamer")
 
 			for(var child = el.firstChild; child !== null; child = child.nextSibling) {
 				console.log(child)
