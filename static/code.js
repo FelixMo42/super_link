@@ -67,17 +67,18 @@ function varMenu(el) {
 		document.getElementById("varNamer").style.display = "block";
 		document.getElementById("varNamer_name").select()
 		document.getElementById("varNamer_name").onchange = function() {
-			name = this.value
-
 			Http.open("RENAME_VAR", url);
-			Http.send({"old": el.value, "new": name});
+			Http.send(JSON.stringify({"old": el.getAttribute("value"), "new": this.value}));
+
+			console.log(el.getAttribute("value"))
+			console.log(JSON.stringify({"old": el.getAttribute("value"), "new": this.value}))
 
 			for(var child = el.firstChild; child !== null; child = child.nextSibling) {
 				console.log(child)
 				if (child.nodeName == "SPAN") {
-					child.innerHTML = name
+					child.innerHTML = this.value
 				} else if (child.nodeName == "INPUT") {
-					child.id = name
+					child.id = this.value
 				}
 			}
 		}

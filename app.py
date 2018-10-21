@@ -57,7 +57,6 @@ def delVar(name):
 	global links
 	global linkers
 
-
 	if name in var:
 		print("sets")
 		del var[name]
@@ -107,6 +106,7 @@ def setup(file):
 	for link in data["links"]:
 		i = 0
 		for v in link["vars"]:
+			#if v == v:
 			links[v].append({
 				"output": v,
 				"func": types[link["name"]][i],
@@ -227,6 +227,43 @@ def delete_var():
 
 @app.route('/', methods=["RENAME_VAR"])
 def rename_var():
+	print(request.data)
+	data = json.loads(request.data)
+
+	for key in var:
+		if key == data["old"]:
+			var[data["new"]] = var[data["old"]]
+			del var[data["old"]]
+
+	for key in sets:
+		if key == data["old"]:
+			sets[data["new"]] = sets[data["old"]]
+			del sets[data["old"]]
+
+	for key in sets_count:
+		if key == data["old"]:
+			sets_count[data["new"]] = sets_count[data["old"]]
+			del sets_count[data["old"]]
+
+	'''for key in links:
+		if key == data["old"]:
+			links[data["new"]] = links[data["old"]]
+			for link in links[data["new"]]:
+				if
+			del links[data["old"]]'''
+
+	for key in linkers:
+		for link in linkers[key]:
+			if link["output"] == data["old"]:
+				link["output"] = data["new"]
+			link["req"] = [data["new"] if name == data["old"] else name for name in link["req"]]
+
+		if key == data["old"]:
+			linkers[data["new"]] = linkers[data["old"]]
+			del linkers[data["old"]]
+
+	dump()
+	save("test")
 	pass
 
 if __name__ == "__main__":
