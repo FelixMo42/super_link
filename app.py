@@ -176,7 +176,7 @@ def save(file):
 
 #update the maths
 
-def cheak(link, clear=False):
+def cheak(link, empty=False):
 	vars = []
 	for v in link["req"]:
 		if v == link["output"]:
@@ -189,7 +189,7 @@ def cheak(link, clear=False):
 			return
 
 	if link["output"] in sets and sets[link["output"]] != "":
-		if clear:
+		if empty:
 			del sets_count[link["output"]][link["cid"]]
 			if len(sets_count[link["output"]]) == 0:
 				clear(link["output"])
@@ -197,7 +197,7 @@ def cheak(link, clear=False):
 		else:
 			sets[link["output"]] = link["func"](vars)
 			sets_count[link["output"]][link["cid"]] = True
-	elif not clear:
+	elif not empty:
 		sets[link["output"]] = link["func"](vars)
 		sets_count[link["output"]] = {link["cid"]: True}
 		update(link["output"])
@@ -227,19 +227,24 @@ def set_var():
 	print("data: ", data)
 
 	if data["value"] == "":
-		clear( data["name"] )
+		print("clear")
+		#clear( data["name"] )
 		del var[data["name"]]
+		save("test")
+		setup("test")
 	else:
 		try:
 			var[data["name"]] = eval(data["value"])
 		except:
 			print("THERE WAS AN ERROR")
-			clear( data["name"] )
+			#clear( data["name"] )
+			save("test")
+			setup("test")
 			return "Must be a number or Python3 code resulting in a number" + "\n" + json.dumps(sets)
 
-		update( data["name"] )
-
-	dump()
+		#update( data["name"] )
+		save("test")
+		setup("test")
 
 	return json.dumps(sets)
 
