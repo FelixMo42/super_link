@@ -1,10 +1,10 @@
+var Http = new XMLHttpRequest();
 const url = window.location.href
 
 function update(name, value) {
 	data = {"name": name, "value": value}
 
-	var Http = new XMLHttpRequest();
-	Http.open("PATCH", url);
+	Http.open("SET_VAR", url);
 	Http.send( JSON.stringify(data) );
 	Http.onreadystatechange = (e) => {
 		console.log(Http.responseText)
@@ -33,27 +33,24 @@ function update(name, value) {
 	}
 }
 
-function newVarCallback() {
-	name = this.value
-
-	if (name == "") {
-		alert("You must enter a variable name!")
-		document.getElementById("varNamer_name").select()
-		return
-	}
-
-	document.getElementById("variables").innerHTML += name + ": <input id='" + name + "' onchange='update(this.id, this.value)'><br>"
-	document.getElementById("varNamer").style.display = "none"
-
-	Http = new XMLHttpRequest();
-	Http.open("POST", url);
-	Http.send( name );
-}
-
 function newVar() {
 	document.getElementById("varNamer").style.display = "block";
 	document.getElementById("varNamer_name").select()
-	document.getElementById("varNamer_name").onchange = newVarCallback
+	document.getElementById("varNamer_name").onchange = function() {
+		name = this.value
+
+		if (name == "") {
+			alert("You must enter a variable name!")
+			document.getElementById("varNamer_name").select()
+			return
+		}
+
+		document.getElementById("variables").innerHTML += name + ": <input id='" + name + "' onchange='update(this.id, this.value)'><br>"
+		document.getElementById("varNamer").style.display = "none"
+
+		Http.open("NEW_VAR", url);
+		Http.send( name );
+	}
 }
 
 function varMenu(el) {
@@ -61,6 +58,9 @@ function varMenu(el) {
 	document.getElementById("varMenu_delete").onclick = function() {
 		el.parentNode.removeChild(el)
 		document.getElementById("varMenu").style.display = "none";
+
+		Http.open("DELETE_VAR", url);
+		Http.send( el.id );
 	}
 	document.getElementById("varMenu_rename").onclick = function() {
 		document.getElementById("varMenu").style.display = "none";
@@ -68,6 +68,10 @@ function varMenu(el) {
 		document.getElementById("varNamer_name").select()
 		document.getElementById("varNamer_name").onchange = function() {
 			name = this.value
+
+			Http.open("RENAME_VAR", url);
+			Http.send({"old": el.value, "new": name});
+
 			for(var child = el.firstChild; child !== null; child = child.nextSibling) {
 				console.log(child)
 				if (child.nodeName == "SPAN") {
@@ -76,9 +80,6 @@ function varMenu(el) {
 					child.id = name
 				}
 			}
-			//console.log(el.childNodes[3].id, name)
-			//console.log(el.inner.replace(el.childNodes[3].id, name))
-			//el.innerHTML.replace(el.childNodes[3].id, name);
 		}
 	}
 }

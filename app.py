@@ -50,6 +50,31 @@ def addVar(name):
 	links[name] = []
 	linkers[name] = []
 
+def delVar(name):
+	global vars
+	global sets
+	global sets_count
+	global links
+	global linkers
+
+
+	if name in var:
+		print("sets")
+		del var[name]
+	if name in sets:
+		print("sets")
+		del sets[name]
+	if name in sets_count:
+		print("sets_count")
+		del sets_count[name]
+	if name in links:
+		print("links")
+		print(links[name])
+		del links[name]
+	if name in linkers:
+		print("linkers")
+		del linkers[name]
+
 def reset():
 	global vars
 	global sets
@@ -82,7 +107,7 @@ def setup(file):
 	for link in data["links"]:
 		i = 0
 		for v in link["vars"]:
-			links[name].append({
+			links[v].append({
 				"output": v,
 				"func": types[link["name"]][i],
 				"id": id,
@@ -163,8 +188,8 @@ def index():
 	dump()
 	return render_template("index.html", variables=sets, value=var, sets=sets)
 
-@app.route('/', methods=["PATCH"])
-def update_var():
+@app.route('/', methods=["SET_VAR"])
+def set_var():
 	data = json.loads(request.data)
 
 	print("data: ", data)
@@ -176,6 +201,7 @@ def update_var():
 		try:
 			var[data["name"]] = eval(data["value"])
 		except:
+			print("THERE WAS AN ERROR")
 			clear( data["name"] )
 			return "Must be a number or Python3 code resulting in a number" + "\n" + json.dumps(sets)
 
@@ -185,10 +211,23 @@ def update_var():
 
 	return json.dumps(sets)
 
-@app.route('/', methods=["POST"])
+@app.route('/', methods=["NEW_VAR"])
 def new_var():
 	addVar(request.data.decode("utf8"))
+	save("test")
 	return ""
+
+@app.route('/', methods=["DELETE_VAR"])
+def delete_var():
+	print("-" + request.data.decode("utf8") + "-")
+	delVar(request.data.decode("utf8"))
+	dump()
+	save("test")
+	return ""
+
+@app.route('/', methods=["RENAME_VAR"])
+def rename_var():
+	pass
 
 if __name__ == "__main__":
 	setup("test")
