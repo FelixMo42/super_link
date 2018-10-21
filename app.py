@@ -44,8 +44,8 @@ types = {
 		"%s°C = %s°F"
 	],
 	"dist_MiKi": [
-		lambda a : a[1] / 0.62137119,
-		lambda a : a[0] * 0.62137119,
+		lambda a : a[1] * 0.62137119,
+		lambda a : a[0] / 0.62137119,
 		"%sMi = %sKm"
 	]
 }
